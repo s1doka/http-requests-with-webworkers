@@ -17,17 +17,20 @@ export function useFetchWithWebWorker(url: string) {
   useEffect(() => {
     const fetch = async () => {
       try {
-        setState({status: "LOADING", data: {}});
+        setState(prevState => ({status: "LOADING", data: prevState.data}));
 
         const data = await webWorker.get(url)
 
         setState({status: "IDLE", data})
       } catch (e) {
-        setState({status: "IDLE", data: {}})
+        setState(prevState => ({status: "IDLE", data: prevState.data}));
       }
     }
 
-    fetch()
+    setInterval(() => {
+      fetch()
+    }, 10000)
+
   }, [webWorker, setState, url]);
 
   return {
